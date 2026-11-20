@@ -2,9 +2,9 @@ import java.util.*;
 
 public class COSC311_Driver_Program1 {
    public static void main(String[] args) {
-       Database d = new Database();
        int response;
        Scanner keyboard = new Scanner(System.in);
+       Database d = new Database(keyboard);
        do
        {
            System.out.println(" 1 Add a new student");
@@ -19,7 +19,14 @@ public class COSC311_Driver_Program1 {
            System.out.println(" ");
            System.out.println(" 0 End");
 
-           response=keyboard.nextInt();
+           if (!keyboard.hasNext()) return;
+           if (!keyboard.hasNextInt()) {
+               keyboard.next();
+               response = -1;
+               System.out.println("Enter a menu number from 0 to 9.");
+               continue;
+           }
+           response = keyboard.nextInt();
 
            switch (response)
            {

@@ -6,7 +6,14 @@ public class Database {
    private IndexArray ID, First, Last;
    private int next;
 
+   private final Scanner scnr;
+
    public Database() {
+       this(new Scanner(System.in));
+   }
+
+   public Database(Scanner scnr) {
+       this.scnr = scnr;
        next = 0;
        myDB = new DatabaseRecord[100];
        ID = new IndexArray(100);
@@ -28,41 +35,46 @@ public class Database {
    }
 
    public void addIt() {
-       Scanner scnr = new Scanner(System.in);
        System.out.println("Please enter the ID of the record.");
+       if (!scnr.hasNext()) return;
        String id1 = scnr.next();
-       if (this.ID.search(id1) == 1) {
-           Scanner scnr1 = new Scanner(System.in);
+       if (this.ID.search(id1) == -1) {
            System.out.println("Please enter both first and last name: ");
-           this.addRecord(id1, scnr1.next(), scnr1.next());
+           if (!scnr.hasNext()) return;
+           String firstName = scnr.next();
+           if (!scnr.hasNext()) return;
+           this.addRecord(id1, firstName, scnr.next());
        } else {
            System.out.println("ID has already been taken. Please enter another.");
        }
    }
 
    private void addRecord(String cID, String cFirst, String cLast) {
-       if (this.ID.search(cID) == 1) {
-           cFirst = cFirst.toUpperCase();
-           cLast = cLast.toUpperCase();
-
-           this.ID.insert(new IndexRecord(cID, next));
-           this.First.insert(new IndexRecord(cFirst, next));
-           this.Last.insert(new IndexRecord(cLast, next));
-       } else {
+       if (this.ID.search(cID) >= 0) {
            System.out.println("ID entered has already been used.");
+           return;
        }
+       if (next >= myDB.length) {
+           System.out.println("The database has no room for another record.");
+           return;
+       }
+       cFirst = cFirst.toUpperCase();
+       cLast = cLast.toUpperCase();
+       this.ID.insert(new IndexRecord(cID, next));
+       this.First.insert(new IndexRecord(cFirst, next));
+       this.Last.insert(new IndexRecord(cLast, next));
        myDB[next++] = new DatabaseRecord(cID, cFirst, cLast);
    }
 
    public void deleteIt() {
-       Scanner scnr = new Scanner(System.in);
        System.out.println("Please enter the ID of the record.");
+       if (!scnr.hasNext()) return;
        String id1 = scnr.next();
        int whereRec = ID.search(id1);
-       if (whereRec != 1) {
+       if (whereRec >= 0) {
            ID.delete(id1);
-           Last.delete(id1);
-           First.delete(id1);
+           Last.deleteByRecord(whereRec);
+           First.deleteByRecord(whereRec);
            System.out.println("Record has been deleted.");
        } else {
            System.out.println("Record has not been found.");
@@ -70,11 +82,11 @@ public class Database {
    }
 
    public void findIt() {
-       Scanner scnr = new Scanner(System.in);
        System.out.println("Please enter the ID of the record.");
+       if (!scnr.hasNext()) return;
        String id1 = scnr.next();
        int answer = ID.search(id1);
-       if (answer != 1) {
+       if (answer >= 0) {
            System.out.println(myDB[answer]);
        } else {
            System.out.println("Searched ID not found");
@@ -111,8 +123,6 @@ public class Database {
            String DatabaseRecord = myDB[ID.getPrevious()].toString();
            System.out.println(DatabaseRecord);
        }
-       String DatabaseRecord = myDB[ID.getMe()].toString();
-       System.out.println(DatabaseRecord);
    }
 
    public void ListByFirstDescending() {
@@ -121,8 +131,6 @@ public class Database {
            String DatabaseRecord = myDB[First.getPrevious()].toString();
            System.out.println(DatabaseRecord);
        }
-       String DatabaseRecord = myDB[First.getMe()].toString();
-       System.out.println(DatabaseRecord);
    }
 
    public void ListByLastDescending() {
@@ -131,7 +139,5 @@ public class Database {
            String DatabaseRecord = myDB[Last.getPrevious()].toString();
            System.out.println(DatabaseRecord);
        }
-       String DatabaseRecord = myDB[Last.getMe()].toString();
-       System.out.println(DatabaseRecord);
    }
 }

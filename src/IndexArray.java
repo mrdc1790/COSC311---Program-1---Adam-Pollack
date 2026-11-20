@@ -24,7 +24,7 @@ public class IndexArray {
    }
 
    public boolean hasPrevious (){
-       if (iterator > 0){
+       if (iterator >= 0){
            return true;
        } else{
            return false;
@@ -62,44 +62,41 @@ public class IndexArray {
    }
 
    public void delete(String key) {
-       int j = 0;
        int place = binarySearch(key);
-       if (place != 1) {
+       if (place >= 0) {
            move(place);
        }
-       /*while (place != Iarray[j++].getWhere() && j < numElems){
-           move (j-1);
-       }*/
+   }
+
+   public void deleteByRecord(int recordIndex) {
+       for (int place = 0; place < numElems; place++) {
+           if (Iarray[place].getWhere() == recordIndex) {
+               move(place);
+               return;
+           }
+       }
    }
 
    private int binarySearch(String key) {
-       int bot = 0;
-       int top = numElems-1;
-       int mid = (top + bot) / 2;
-       while (bot <= top) {
-           mid = (bot + top) / 2;
-           if (Iarray[mid].getKey().equals(key)) {
-               break;
+       int bottom = 0;
+       int top = numElems - 1;
+       while (bottom <= top) {
+           int mid = (bottom + top) / 2;
+           int comparison = Iarray[mid].getKey().compareTo(key);
+           if (comparison == 0) {
+               return mid;
            }
-           if (Iarray[mid].getKey().compareTo(key) < 0) {
-               bot = mid + 1;
-           }else {
-        	   top = mid - 1;
+           if (comparison < 0) {
+               bottom = mid + 1;
+           } else {
+               top = mid - 1;
            }
        }
-       if (Iarray[mid] != null && Iarray[mid].getKey().equals(key)) {
-           return mid;
-       } else {
-           return 1;
-       }
+       return -1;
    }
 
    public int search(String key){
-       int k = binarySearch(key);
-       if (k != 1){
-           return Iarray[k].getWhere();
-       } else{
-           return 1;
-       }
+       int place = binarySearch(key);
+       return place < 0 ? -1 : Iarray[place].getWhere();
    }
 }
