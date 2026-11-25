@@ -1,6 +1,8 @@
 # COSC 311 Student Database
 
-A Java console project for managing student records with sorted indexes.
+Java data structures coursework on maintaining sorted views of a single student-record store. The console app can add, delete, find, and list records using separate indexes for student ID, first name, and last name. [Record store](src/Database.java) · [Sorted index](src/IndexArray.java)
+
+## Run locally
 
 Run these commands in the repository root, where the program loads dataset.txt:
 
